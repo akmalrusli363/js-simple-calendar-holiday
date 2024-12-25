@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Calendar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+  <link rel="stylesheet" href="index.css">
+  <link rel="icon" type="image/png" href="./favicon/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="./favicon/favicon.svg" />
+  <link rel="shortcut icon" href="./favicon/favicon.ico" />
+</head>
+
+<body>
+  <div class="calendar-root">
+    <div class="calendar-pictoral">
+      <img class="calendar-pictoral-img" src="src/placeholder-blur.jpg" alt="">
+    </div>
+    <div class="calendar-container">
+      <header class="calendar-header">
+        <p class="calendar-current-date"></p>
+        <div class="calendar-navigation">
+          <span id="calendar-prev" class="material-symbols-rounded">
+            chevron_left
+          </span>
+          <span id="calendar-next" class="material-symbols-rounded">
+            chevron_right
+          </span>
+        </div>
+      </header>
+
+      <div class="calendar-body">
+        <ul class="calendar-weekdays">
+          <li>Sun</li>
+          <li>Mon</li>
+          <li>Tue</li>
+          <li>Wed</li>
+          <li>Thu</li>
+          <li>Fri</li>
+          <li>Sat</li>
+        </ul>
+        <ul class="calendar-dates"></ul>
+      </div>
+
+      <footer class="calendar-footer">
+        <p class="title-text">Events / Holidays</p>
+        <p class="calendar-empty-holiday-list">Not available</p>
+        <div class="calendar-holidays">
+          <ul class="calendar-holidays-list">
+          </ul>
+        </div>
+      </footer>
+    </div>
+  </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+<script src="index.js"></script>
+
+</html>
