@@ -162,6 +162,10 @@ header .calendar-current-date {
   width: calc(100% / 7);
   font-size: 1em;
   color: #414141;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 .calendar-body li.holiday {
