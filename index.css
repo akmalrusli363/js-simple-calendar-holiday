@@ -188,6 +188,19 @@ header .calendar-current-date {
   transition: margin 0.1s linear;
 }
 
+.calendar-body .calendar-dates li a {
+  color: #414141;
+  text-decoration: none;
+}
+
+.calendar-body .calendar-dates li.active a {
+  color: #fff;
+}
+
+.calendar-body .calendar-dates li.holiday a {
+  color: #ff4141;
+}
+
 .calendar-dates li.inactive {
   color: #aaa;
 }

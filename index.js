@@ -151,7 +151,11 @@ const updateCalendar = (holidays) => {
       holidays[year][month][i] != null
         ? 'holiday'
         : ''
-    dateTable += `<li class="${isToday} ${isHoliday}">${i}</li>`
+    let britannicaDate = `http://britannica.com/on-this-day/${months[month]}-${i}`
+    let dateDiv = `<div>${i}</div>`
+    let fullDate = `${i} ${months[month]}`
+    let clickableDate = `<a href="${britannicaDate}" target="_blank" rel="noopener noreferrer" title="${fullDate}">${dateDiv}</a>`
+    dateTable += `<li class="${isToday} ${isHoliday}">${clickableDate}</li>`
   }
 
   // Loop to add the first dates of the next month
