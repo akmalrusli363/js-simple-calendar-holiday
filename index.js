@@ -1,6 +1,6 @@
-let date = new Date()
-let year = date.getFullYear()
-let month = date.getMonth()
+let cDate = new Date()
+let year = cDate.getFullYear()
+let month = cDate.getMonth()
 
 const day = document.querySelector('.calendar-dates')
 const currDate = document.querySelector('.calendar-current-date')
@@ -13,6 +13,8 @@ const emptyHolidaySection = document.querySelector(
 const prevNextIcons = document.querySelectorAll('.calendar-navigation span')
 const calendarImg = document.querySelector('.calendar-pictoral-img')
 const urlParams = new URLSearchParams(window.location.search)
+
+let locale = urlParams.get('locale') ?? 'id-ID'
 
 const months = [
   'January',
@@ -28,6 +30,40 @@ const months = [
   'November',
   'December'
 ]
+
+const getWeekdayName = (date) => {
+  return date.toLocaleDateString(locale, { weekday: 'long' })
+}
+
+/**
+ * Generate localized weekday names for calendar header.
+ * Supports configurable week start day (0=Sunday, 1=Monday).
+ *
+ * @param {string} locale - BCP 47 language tag, e.g. 'en-US', 'fr-FR'
+ * @param {number} weekStartsOn - 0 for Sunday, 1 for Monday (default 0)
+ */
+const generateWeekdayHeader = (locale, weekStartsOn = 0) => {
+  const dayNamesFormatter = new Intl.DateTimeFormat(locale, { weekday: 'short' });
+  let weekdaysHtml = '';
+
+  for (let i = 0; i < 7; i++) {
+    // Calculate weekday index shifted by weekStartsOn
+    const dayIndex = (weekStartsOn + i) % 7;
+
+    // Construct a date where .getDay() == dayIndex
+    // Use Jan 4, 1970 (Sunday) + dayIndex offset
+    const baseDate = new Date(1970, 0, 4 + dayIndex);
+
+    const dayName = dayNamesFormatter.format(baseDate);
+    weekdaysHtml += `<li>${dayName}</li>`;
+  }
+
+  // Inject to your calendar weekday container
+  const weekdayContainer = document.querySelector('.calendar-weekdays');
+  if (weekdayContainer) {
+    weekdayContainer.innerHTML = weekdaysHtml;
+  }
+}
 
 const fallbackHolidays = async () => {
   try {
@@ -140,7 +176,7 @@ const updateCalendar = (holidays) => {
   // Loop to add the dates of the current month
   for (let i = 1; i <= lastDate; i++) {
     let isToday =
-      i === date.getDate() &&
+      i === cDate.getDate() &&
       month === new Date().getMonth() &&
       year === new Date().getFullYear()
         ? 'active'
@@ -151,9 +187,15 @@ const updateCalendar = (holidays) => {
       holidays[year][month][i] != null
         ? 'holiday'
         : ''
-    let britannicaDate = `http://britannica.com/on-this-day/${months[month]}-${i}`
+      // Compute abbreviated day name
+    let dayName = new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(new Date(year, month, i))
+
+    // Build dateDiv with day name
     let dateDiv = `<div>${i}</div>`
-    let fullDate = `${i} ${months[month]}`
+    // let dateDiv = `<div>${i}</div>`
+    let britannicaDate = `http://britannica.com/on-this-day/${months[month]}-${i}`
+    let holidayDescription = (isHoliday === 'holiday') ? `- ${holidays[year][month][i]}`: ''
+    let fullDate = `${new Date(year, month, i).toLocaleDateString(locale, {dateStyle:'full'})} ${holidayDescription}`.trim()
     let clickableDate = `<a href="${britannicaDate}" target="_blank" rel="noopener noreferrer" title="${fullDate}">${dateDiv}</a>`
     dateTable += `<li class="${isToday} ${isHoliday}">${clickableDate}</li>`
   }
@@ -163,8 +205,9 @@ const updateCalendar = (holidays) => {
     dateTable += `<li class="inactive">${i - dayEnd + 1}</li>`
   }
 
-  currDate.innerText = `${months[month]} ${year}`
-  document.title = `Calendar - ${months[month]} ${year}`
+  const currMonth = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(new Date(year, month, 1))
+  currDate.innerText = currMonth
+  document.title = `Calendar - ${currMonth}`
   day.innerHTML = dateTable
 
   let holidayListTxt = ''
@@ -210,18 +253,20 @@ const changeMonth = (holidayData, isPreviousMonth) => {
   month = isPreviousMonth ? month - 1 : month + 1
 
   if (month < 0 || month > 11) {
-    date = new Date(year, month, new Date().getDate())
-    year = date.getFullYear()
-    month = date.getMonth()
+    cDate = new Date(year, month, new Date().getDate())
+    year = cDate.getFullYear()
+    month = cDate.getMonth()
   } else {
-    date = new Date()
+    cDate = new Date()
   }
 
+  generateWeekdayHeader(locale)
   updateCalendar(holidayData)
   loadCalendarImage()
 }
 
 holidays().then((holidayData) => {
+  generateWeekdayHeader(locale)
   updateCalendar(holidayData)
   loadCalendarImage()
 
